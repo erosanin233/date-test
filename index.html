@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Test Case #001 — Запланировать свидание</title>
+  <meta name="description" content="Нужна помощь QA: протестировать фичу «Свидание»" />
+
+  <style>
+    :root{
+      --bg1:#0b1020;
+      --bg2:#101a3a;
+      --card: rgba(255,255,255,.08);
+      --card2: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.68);
+      --accent: #ff6aa2;
+      --accent2:#7ee7ff;
+      --ok:#66f0a8;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --radius: 18px;
+      --radius2: 26px;
+      --max: 980px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 15% 10%, rgba(255,106,162,.28), transparent 60%),
+        radial-gradient(900px 600px at 90% 25%, rgba(126,231,255,.22), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    .wrap{ max-width:var(--max); margin:0 auto; padding:28px 18px 80px; }
+
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; margin-bottom:14px;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      font-family: var(--mono);
+      color: var(--muted);
+      user-select:none;
+    }
+    .statusdot{
+      width:10px; height:10px; border-radius:50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 4px rgba(102,240,168,.18);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse{
+      0%,100%{ transform:scale(1); opacity:1; }
+      50%{ transform:scale(1.15); opacity:.85; }
+    }
+
+    .hero{
+      position:relative;
+      padding:34px 22px;
+      border-radius: var(--radius2);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(500px 260px at 20% 20%, rgba(255,106,162,.35), transparent 60%),
+        radial-gradient(540px 280px at 80% 30%, rgba(126,231,255,.25), transparent 60%);
+      filter: blur(14px);
+      opacity:.9;
+      pointer-events:none;
+    }
+
+    .hero-inner{ position:relative; display:grid; grid-template-columns: 1.1fr .9fr; gap:18px; align-items:center; }
+    @media (max-width: 860px){ .hero-inner{ grid-template-columns:1fr; } }
+
+    h1{
+      margin:0 0 10px;
+      font-size: clamp(28px, 3.6vw, 46px);
+      letter-spacing:-.02em;
+      line-height:1.08;
+    }
+    .sub{
+      margin:0 0 18px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height:1.55;
+      max-width: 62ch;
+    }
+
+    .cta-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
+    .btn{
+      border:0;
+      cursor:pointer;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 650;
+      color: rgba(0,0,0,.88);
+      background: linear-gradient(90deg, var(--accent), #ffd36a);
+      box-shadow: 0 12px 24px rgba(255,106,162,.22);
+      transition: transform .12s ease, filter .12s ease;
+      display:inline-flex; align-items:center; gap:10px;
+      text-decoration:none;
+    }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.02); }
+    .btn:active{ transform: translateY(0px); }
+
+    .btn2{
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 12px 24px rgba(0,0,0,.12);
+    }
+
+    .stamp{
+      position:relative;
+      padding:18px 16px;
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.20);
+      border: 1px dashed rgba(255,255,255,.22);
+      font-family: var(--mono);
+      color: rgba(255,255,255,.80);
+    }
+    .stamp b{ color: rgba(255,255,255,.92); }
+    .kv{ display:grid; grid-template-columns: 140px 1fr; gap:8px 12px; margin-top:10px; }
+    .k{ color: rgba(255,255,255,.65); }
+    .v{ color: rgba(255,255,255,.92); }
+
+    .cards{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+      margin-top: 16px;
+    }
+    @media (max-width: 860px){ .cards{ grid-template-columns:1fr; } }
+
+    .card{
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      padding: 16px 16px;
+      box-shadow: 0 16px 42px rgba(0,0,0,.22);
+    }
+    .card h3{
+      margin:0 0 8px;
+      font-size: 16px;
+      letter-spacing:-.01em;
+    }
+    .card p{ margin:0; color: var(--muted); line-height:1.55; }
+    .tiny{ font-family:var(--mono); font-size: 12.5px; color: rgba(255,255,255,.72); }
+
+    .section{
+      margin-top: 22px;
+      padding: 18px 16px;
+      border-radius: var(--radius2);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 16px 44px rgba(0,0,0,.20);
+    }
+    .section h2{
+      margin:0 0 10px;
+      font-size: 20px;
+      letter-spacing:-.01em;
+    }
+    .section p{ margin:0 0 10px; color: var(--muted); line-height:1.6; }
+
+    .note{
+      margin-top:10px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      color: rgba(255,255,255,.74);
+      font-size: 13.5px;
+    }
+
+    /* маленькие “плавающие” сердечки */
+    .floaty{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+    }
+    .heart{
+      position:absolute;
+      font-size: 18px;
+      opacity:.0;
+      animation: floatUp 6s linear infinite;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,.3));
+    }
+    @keyframes floatUp{
+      0%{ transform: translateY(20px) translateX(0) scale(.9); opacity:0; }
+      10%{ opacity:.55; }
+      100%{ transform: translateY(-420px) translateX(30px) scale(1.15); opacity:0; }
+    }
+
+    footer{
+      margin-top:18px;
+      color: rgba(255,255,255,.50);
+      font-size: 12.5px;
+      text-align:center;
+    }
+    a{ color: inherit; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="pill"><span class="statusdot"></span> build: stable • env: prod • severity: high</div>
+      <div class="pill">owner: you • module: “date-planner”</div>
+    </div>
+
+    <section class="hero">
+      <div class="floaty" id="floaty"></div>
+
+      <div class="hero-inner">
+        <div>
+          <h1>Test Case #001: “Запланировать свидание”</h1>
+          <p class="sub">
+            Нужна помощь тестировщика 🙂 Я накатил фичу “Свидание”.
+            Прогони тест: выбери дату/время и предпочтения — я всё организую.
+          </p>
+
+          <div class="cta-row">
+            <a class="btn" href="#run" id="runBtn">▶ Run test</a>
+            <a class="btn btn2" href="#spec">📄 Посмотреть спецификацию</a>
+          </div>
+
+          <div class="cards">
+            <div class="card">
+              <h3>✅ Expected result</h3>
+              <p>Ты говоришь “да”, а я беру на себя логистику и делаю всё красиво ❤️</p>
+              <div style="height:8px"></div>
+              <div class="tiny">acceptance criteria: улыбка + согласие</div>
+            </div>
+
+            <div class="card">
+              <h3>🧯 Risk / Edge cases</h3>
+              <p>Если варианты времени не подходят — укажи в “баг-репорте”, это будет принято как valid input 🙂</p>
+              <div style="height:8px"></div>
+              <div class="tiny">mitigation: flexible schedule</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stamp" id="spec">
+          <b>SPEC</b>
+          <div class="kv">
+            <div class="k">Preconditions</div><div class="v">хорошее настроение (желательно)</div>
+            <div class="k">Steps</div><div class="v">выбрать слот + формат + условия</div>
+            <div class="k">Priority</div><div class="v">ASAP</div>
+            <div class="k">Owner</div><div class="v">я (буду фиксить всё сам)</div>
+            <div class="k">QA</div><div class="v">ты 🙂</div>
+          </div>
+          <div class="note">⚠️ Воспроизводится баг “скучные выходные” — фиксим совместным релизом.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="run">
+      <h2>🧪 Run test</h2>
+      <p>Заполни форму ниже. Это займёт минуту, а выхлоп — прекрасный 🙂</p>
+
+      <!-- TALLY EMBED START -->
+      <!-- 1) Замени YOUR_TALLY_FORM_ID на ID твоей формы -->
+      <iframe
+        data-tally-src="https://tally.so/r/YOUR_TALLY_FORM_ID"
+        loading="lazy"
+        width="100%"
+        height="700"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        title="Date Test Form">
+      </iframe>
+
+      <script>
+        // Официальный скрипт Tally для корректной подгрузки
+        var d=document, w=window;
+        var s=d.createElement("script");
+        s.src="https://tally.so/widgets/embed.js";
+        s.defer=true;
+        d.body.appendChild(s);
+      </script>
+      <!-- TALLY EMBED END -->
+
+      <div class="note">
+        P.S. Если ты найдёшь баг — это не баг, это feature request 😄
+      </div>
+    </section>
+
+    <footer>
+      made with ✨ + немного наглости • version 1.0.0
+    </footer>
+  </div>
+
+  <script>
+    // плавный скролл
+    document.getElementById('runBtn').addEventListener('click', function(e){
+      // оставим якорь, но сделаем мягко
+      e.preventDefault();
+      document.querySelector('#run').scrollIntoView({behavior:'smooth', block:'start'});
+      history.replaceState(null, '', '#run');
+    });
+
+    // “плавающие” сердечки
+    const floaty = document.getElementById('floaty');
+    const hearts = ["💗","💖","💘","💓","💞"];
+    function spawn(){
+      const el = document.createElement('div');
+      el.className = 'heart';
+      el.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+      const left = Math.random()*100;
+      const delay = Math.random()*2;
+      const size = 14 + Math.random()*16;
+      el.style.left = left + '%';
+      el.style.bottom = (-10 - Math.random()*40) + 'px';
+      el.style.animationDelay = delay + 's';
+      el.style.fontSize = size + 'px';
+      el.style.opacity = 0;
+      floaty.appendChild(el);
+      setTimeout(()=>{ el.remove(); }, 6500);
+    }
+    setInterval(spawn, 450);
+  </script>
+</body>
+</html>
