@@ -182,61 +182,59 @@
       <div class="hero">
         <div class="card">
           <div>
-            <span class="pill">no Tally</span>
-            <span class="pill">Make webhook</span>
-            <span class="pill">one-file</span>
+            <span class="pill">приглашение</span>
+<span class="pill">быстрая отправка</span>
+<span class="pill">всё в одном файле</span>
           </div>
 
-          <h1>Let’s plan a date</h1>
-          <p class="sub">
-            This page has a built-in form that sends your chosen date/time and notes to Make via webhook.
-            Everything works without a server (GitHub Pages-friendly).
-          </p>
+          <h1>Давай выберем день</h1>
+<p class="sub">
+  Заполни пару полей — и я сразу получу предложение в Телеграме. 
+  Можно выбрать формат, настроение и условия.
+</p>
 
           <div class="ctaRow">
-            <button class="btn btnPrimary" id="btnRun">Run test</button>
-            <button class="btn btnGhost" id="btnHearts">More hearts</button>
+          <button class="btn btnPrimary" id="btnRun">Выбрать дату</button>
+<button class="btn btnGhost" id="btnHearts">Добавить романтики</button>
           </div>
 
           <div class="divider"></div>
 
-          <div class="grid" id="why">
-            <div class="tile">
-              <h3>Simple</h3>
-              <p>Single HTML file: styles + logic inside. Easy to copy/paste into GitHub.</p>
-            </div>
-            <div class="tile">
-              <h3>Direct</h3>
-              <p>Form submits via fetch() to your Make webhook URL, with status messages.</p>
-            </div>
-            <div class="tile">
-              <h3>Clean</h3>
-              <p>No extra embeds or widgets. Only what you need for the flow.</p>
-            </div>
-          </div>
-        </div>
+          <div class="tile">
+  <h3>Быстро</h3>
+  <p>Пара кликов — и предложение улетит мне в Телеграм.</p>
+</div>
+<div class="tile">
+  <h3>Удобно</h3>
+  <p>Можно выбрать формат и настроение, добавить условия.</p>
+</div>
+<div class="tile">
+  <h3>Лаконично</h3>
+  <p>Никаких лишних форм и виджетов — только главное.</p>
+</div>
+        
 
-        <div class="rightBox">
-          <div class="mini">
-            <h3>What it sends</h3>
-            <p><b>date</b>, <b>time</b>, <b>format</b>, <b>conditions[]</b>, <b>notes</b></p>
-          </div>
-          <div class="mini">
-            <h3>Where to change webhook</h3>
-            <p>Edit <b>MAKE_WEBHOOK_URL</b> in the script at the bottom.</p>
-          </div>
-          <div class="mini" id="plan">
-            <h3>How to use</h3>
-            <p>Open page → fill the form → submit → check Make scenario for the payload.</p>
-          </div>
+        <div class="mini">
+  <h3>Что будет в сообщении</h3>
+  <p>дата, время, формат, настроение, условия и комментарий</p>
+</div>
+<div class="mini">
+  <h3>Как это работает</h3>
+  <p>Ты отправляешь форму — мне прилетает сообщение в Телеграм.</p>
+</div>
+<div class="mini" id="plan">
+  <h3>Идеи</h3>
+  <p>Можно выбрать «кофе», «прогулку», «ужин» или «кино» и добавить детали.</p>
+</div>
         </div>
       </div>
 
       <section id="run">
         <div class="card">
           <div class="sectionTitle">
-            <h2>Run test</h2>
-            <span>Send a test payload to Make</span>
+            <h2>Заполни и отправь</h2>
+<span>сообщение придёт в Телеграм</span>
+            
           </div>
 
           <form id="dateForm" class="native-form">
