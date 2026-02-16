@@ -370,7 +370,7 @@
 
 <script>
   // ВСТАВИШЬ СЮДА свой Make webhook URL:
-  const MAKE_WEBHOOK_URL = "PASTE_YOUR_MAKE_WEBHOOK_URL_HERE";
+  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/qrm6h2uxrw22567bicfqg70whriqywcl";
 
   const form = document.getElementById('dateForm');
   const statusBox = document.getElementById('formStatus');
@@ -383,10 +383,10 @@
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    if (MAKE_WEBHOOK_URL.includes("https://hook.eu1.make.com/qrm6h2uxrw22567bicfqg70whriqywcl")) {
-      showStatus("⚠️ Не настроен webhook. Сначала вставь ссылку Make в код.");
-      return;
-    }
+    if (MAKE_WEBHOOK_URL.includes("PASTE_YOUR_MAKE_WEBHOOK_URL_HERE")) {
+  showStatus("⚠️ Не настроен webhook. Сначала вставь ссылку Make в код.");
+  return;
+}
 
     const fd = new FormData(form);
     const conditions = fd.getAll('conditions'); // чекбоксы
