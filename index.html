@@ -279,8 +279,146 @@
       <h2>🧪 Run test</h2>
       <p>Заполни форму ниже. Это займёт минуту, а выхлоп — прекрасный 🙂</p>
 
-      <!-- TALLY EMBED START -->
-      <!-- 1) Замени YOUR_TALLY_FORM_ID на ID твоей формы -->
+      <form id="dateForm" class="native-form">
+  <div class="grid">
+    <label>
+      <span>📅 Дата</span>
+      <input name="date" type="date" required>
+    </label>
+
+    <label>
+      <span>🕖 Время</span>
+      <select name="time" required>
+        <option value="" selected disabled>выбери</option>
+        <option>18:00</option>
+        <option>19:00</option>
+        <option>20:00</option>
+        <option>21:00</option>
+      </select>
+    </label>
+
+    <label class="full">
+      <span>🎯 Формат</span>
+      <div class="choices">
+        <label class="chip"><input type="radio" name="format" value="☕ Кофе + прогулка" required> ☕ Кофе + прогулка</label>
+        <label class="chip"><input type="radio" name="format" value="🍜 Ужин" required> 🍜 Ужин</label>
+        <label class="chip"><input type="radio" name="format" value="🎟️ Кино/выставка" required> 🎟️ Кино/выставка</label>
+        <label class="chip"><input type="radio" name="format" value="🎁 Сюрприз (с условиями)" required> 🎁 Сюрприз (с условиями)</label>
+      </div>
+    </label>
+
+    <label class="full">
+      <span>⚙️ Условия (можно несколько)</span>
+      <div class="choices">
+        <label class="chip"><input type="checkbox" name="conditions" value="не шумно"> не шумно</label>
+        <label class="chip"><input type="checkbox" name="conditions" value="недолго (1–2 часа)"> недолго (1–2 часа)</label>
+        <label class="chip"><input type="checkbox" name="conditions" value="без спешки"> без спешки</label>
+        <label class="chip"><input type="checkbox" name="conditions" value="мне ок всё 😄"> мне ок всё 😄</label>
+      </div>
+    </label>
+
+    <label class="full">
+      <span>🐞 Баг-репорт / пожелания</span>
+      <textarea name="notes" rows="4" placeholder="Например: не люблю толпы, люблю чай 😄"></textarea>
+    </label>
+  </div>
+
+  <button class="btn" type="submit">✅ Отправить результат теста</button>
+  <div id="formStatus" class="note" style="display:none; margin-top:10px;"></div>
+</form>
+
+<style>
+  .native-form { margin-top: 6px; }
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:12px;
+  }
+  @media (max-width: 860px){ .grid{ grid-template-columns:1fr; } }
+  label{ display:block; }
+  label span{ display:block; margin:0 0 6px; color: rgba(255,255,255,.78); font-size: 13px; }
+  input, select, textarea{
+    width:100%;
+    padding:12px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.22);
+    color: rgba(255,255,255,.92);
+    outline: none;
+  }
+  textarea{ resize: vertical; min-height: 110px; }
+  .full{ grid-column: 1 / -1; }
+
+  .choices{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .chip{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    cursor:pointer;
+    user-select:none;
+  }
+  .chip input{ width:auto; }
+</style>
+
+<script>
+  // ВСТАВИШЬ СЮДА свой Make webhook URL:
+  const MAKE_WEBHOOK_URL = "PASTE_YOUR_MAKE_WEBHOOK_URL_HERE";
+
+  const form = document.getElementById('dateForm');
+  const statusBox = document.getElementById('formStatus');
+
+  function showStatus(text){
+    statusBox.style.display = 'block';
+    statusBox.textContent = text;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (MAKE_WEBHOOK_URL.includes("PASTE_YOUR_MAKE_WEBHOOK_URL_HERE")) {
+      showStatus("⚠️ Не настроен webhook. Сначала вставь ссылку Make в код.");
+      return;
+    }
+
+    const fd = new FormData(form);
+    const conditions = fd.getAll('conditions'); // чекбоксы
+    const payload = {
+      date: fd.get('date'),
+      time: fd.get('time'),
+      format: fd.get('format'),
+      conditions: conditions,
+      notes: fd.get('notes') || ""
+    };
+
+    try{
+      showStatus("⏳ Отправляю результат теста...");
+      const res = await fetch(MAKE_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error("bad response: " + res.status);
+
+      form.reset();
+      showStatus("✅ Тест пройден. QA принял. Я скоро напишу для подтверждения ❤️");
+      // мягко проскроллим, чтобы она увидела успех
+      statusBox.scrollIntoView({behavior:"smooth", block:"center"});
+    }catch(err){
+      showStatus("❌ Не удалось отправить. Попробуй ещё раз (или напиши мне напрямую).");
+      console.error(err);
+    }
+  });
+</script>
+
       <iframe
         data-tally-src="https://tally.so/r/YOUR_TALLY_FORM_ID"
         loading="lazy"
