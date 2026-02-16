@@ -1,483 +1,413 @@
 <!doctype html>
-<html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Test Case #001 — Запланировать свидание</title>
-  <meta name="description" content="Нужна помощь QA: протестировать фичу «Свидание»" />
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Date Proposal</title>
+    <meta name="description" content="A playful one-page date proposal with a built-in form that sends to Make webhook." />
+    <style>
+      :root{
+        --bg1:#ffdde1;
+        --bg2:#ee9ca7;
+        --card:#ffffffcc;
+        --text:#2a2a2a;
+        --muted:#6b6b6b;
+        --accent:#ff5a7a;
+        --accent2:#7c3aed;
+        --shadow: 0 14px 40px rgba(0,0,0,.15);
+        --radius: 22px;
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+        color:var(--text);
+        background: radial-gradient(1200px 700px at 20% 10%, #ffffffaa, transparent),
+                    linear-gradient(120deg,var(--bg1),var(--bg2));
+        overflow-x:hidden;
+      }
 
-  <style>
-    :root{
-      --bg1:#0b1020;
-      --bg2:#101a3a;
-      --card: rgba(255,255,255,.08);
-      --card2: rgba(255,255,255,.12);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.68);
-      --accent: #ff6aa2;
-      --accent2:#7ee7ff;
-      --ok:#66f0a8;
-      --shadow: 0 18px 50px rgba(0,0,0,.35);
-      --radius: 18px;
-      --radius2: 26px;
-      --max: 980px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
-    }
+      .wrap{max-width:1100px;margin:0 auto;padding:28px 18px 80px}
+      header{
+        display:flex;align-items:center;justify-content:space-between;gap:16px;
+        position:sticky;top:0;z-index:5;
+        padding:12px 0;
+        backdrop-filter: blur(8px);
+      }
+      .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
+      .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 6px rgba(255,90,122,.18)}
+      nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+      nav a{
+        text-decoration:none;color:var(--text);font-weight:600;
+        padding:10px 12px;border-radius:999px;background:rgba(255,255,255,.35);
+        transition:.15s ease;
+      }
+      nav a:hover{transform:translateY(-1px);background:rgba(255,255,255,.55)}
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family: var(--sans);
-      color: var(--text);
-      background:
-        radial-gradient(1200px 700px at 15% 10%, rgba(255,106,162,.28), transparent 60%),
-        radial-gradient(900px 600px at 90% 25%, rgba(126,231,255,.22), transparent 55%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      overflow-x:hidden;
-    }
+      .hero{
+        display:grid;grid-template-columns: 1.2fr .8fr;gap:18px;
+        margin-top:18px;
+      }
+      @media (max-width:900px){.hero{grid-template-columns:1fr;}}
+      .card{
+        background:var(--card);
+        border:1px solid rgba(255,255,255,.35);
+        border-radius:var(--radius);
+        box-shadow:var(--shadow);
+        padding:22px;
+      }
+      h1{margin:0 0 10px;font-size: clamp(28px, 3.2vw, 44px); line-height:1.05;}
+      .sub{margin:0 0 18px;color:var(--muted);font-size:16px;max-width:58ch}
+      .ctaRow{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+      .btn{
+        border:0;cursor:pointer;
+        padding:12px 16px;border-radius:999px;
+        font-weight:800;
+        transition:.15s ease;
+      }
+      .btnPrimary{background:var(--accent);color:white;box-shadow:0 12px 24px rgba(255,90,122,.25)}
+      .btnPrimary:hover{transform:translateY(-1px)}
+      .btnGhost{background:rgba(255,255,255,.5);color:var(--text)}
+      .btnGhost:hover{transform:translateY(-1px);background:rgba(255,255,255,.7)}
+      .pill{
+        display:inline-flex;align-items:center;gap:8px;
+        padding:8px 12px;border-radius:999px;
+        background:rgba(255,255,255,.5);
+        font-weight:700;color:var(--muted);margin:0 8px 10px 0;
+      }
 
-    .wrap{ max-width:var(--max); margin:0 auto; padding:28px 18px 80px; }
+      .rightBox{
+        display:flex;flex-direction:column;gap:12px;height:100%;
+      }
+      .mini{
+        background:rgba(255,255,255,.45);
+        border:1px solid rgba(255,255,255,.35);
+        border-radius:18px;
+        padding:16px;
+      }
+      .mini h3{margin:0 0 8px;font-size:16px}
+      .mini p{margin:0;color:var(--muted);font-size:14px;line-height:1.45}
 
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px; margin-bottom:14px;
-    }
-    .pill{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:10px 14px;
-      border-radius:999px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 30px rgba(0,0,0,.18);
-      font-family: var(--mono);
-      color: var(--muted);
-      user-select:none;
-    }
-    .statusdot{
-      width:10px; height:10px; border-radius:50%;
-      background: var(--ok);
-      box-shadow: 0 0 0 4px rgba(102,240,168,.18);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse{
-      0%,100%{ transform:scale(1); opacity:1; }
-      50%{ transform:scale(1.15); opacity:.85; }
-    }
+      section{margin-top:22px}
+      .sectionTitle{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:10px}
+      .sectionTitle h2{margin:0;font-size:20px}
+      .sectionTitle span{color:var(--muted);font-size:14px}
 
-    .hero{
-      position:relative;
-      padding:34px 22px;
-      border-radius: var(--radius2);
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      border: 1px solid rgba(255,255,255,.12);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
+      .grid{
+        display:grid;grid-template-columns: repeat(3,1fr);gap:14px;
+      }
+      @media (max-width:900px){.grid{grid-template-columns:1fr}}
+      .tile{
+        background:rgba(255,255,255,.45);
+        border:1px solid rgba(255,255,255,.35);
+        border-radius:18px;padding:16px;
+      }
+      .tile h3{margin:0 0 8px;font-size:16px}
+      .tile p{margin:0;color:var(--muted);font-size:14px;line-height:1.45}
 
-    .hero::before{
-      content:"";
-      position:absolute; inset:-2px;
-      background:
-        radial-gradient(500px 260px at 20% 20%, rgba(255,106,162,.35), transparent 60%),
-        radial-gradient(540px 280px at 80% 30%, rgba(126,231,255,.25), transparent 60%);
-      filter: blur(14px);
-      opacity:.9;
-      pointer-events:none;
-    }
+      .native-form{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:12px;
+        margin-top:10px;
+      }
+      @media (max-width:700px){.native-form{grid-template-columns:1fr}}
+      label{display:flex;flex-direction:column;gap:6px;font-weight:700}
+      input, select, textarea{
+        padding:12px 12px;
+        border-radius:14px;
+        border:1px solid rgba(0,0,0,.08);
+        background:rgba(255,255,255,.75);
+        outline:none;
+        font-size:14px;
+      }
+      textarea{min-height:110px;resize:vertical}
+      .full{grid-column:1 / -1}
+      .checks{display:flex;gap:10px;flex-wrap:wrap}
+      .check{
+        display:flex;align-items:center;gap:8px;
+        background:rgba(255,255,255,.65);
+        border:1px solid rgba(0,0,0,.06);
+        border-radius:999px;
+        padding:8px 12px;
+        font-weight:700;color:var(--muted);
+      }
+      .check input{width:16px;height:16px}
+      .status{
+        margin-top:10px;
+        color:var(--muted);
+        font-weight:700;
+      }
+      .status.ok{color:#14532d}
+      .status.err{color:#7f1d1d}
 
-    .hero-inner{ position:relative; display:grid; grid-template-columns: 1.1fr .9fr; gap:18px; align-items:center; }
-    @media (max-width: 860px){ .hero-inner{ grid-template-columns:1fr; } }
+      .divider{
+        height:1px;
+        background:rgba(255,255,255,.55);
+        margin:18px 0;
+      }
 
-    h1{
-      margin:0 0 10px;
-      font-size: clamp(28px, 3.6vw, 46px);
-      letter-spacing:-.02em;
-      line-height:1.08;
-    }
-    .sub{
-      margin:0 0 18px;
-      color: var(--muted);
-      font-size: 16px;
-      line-height:1.55;
-      max-width: 62ch;
-    }
+      .hearts{
+        position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;
+      }
+      .heart{
+        position:absolute;
+        font-size:18px;
+        opacity:.85;
+        animation: floatUp 6.5s linear forwards;
+        filter: drop-shadow(0 8px 10px rgba(0,0,0,.15));
+      }
+      @keyframes floatUp{
+        from{ transform: translateY(0) translateX(0) rotate(0deg); opacity:.9;}
+        to{ transform: translateY(-120vh) translateX(70px) rotate(24deg); opacity:0;}
+      }
 
-    .cta-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
-    .btn{
-      border:0;
-      cursor:pointer;
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-weight: 650;
-      color: rgba(0,0,0,.88);
-      background: linear-gradient(90deg, var(--accent), #ffd36a);
-      box-shadow: 0 12px 24px rgba(255,106,162,.22);
-      transition: transform .12s ease, filter .12s ease;
-      display:inline-flex; align-items:center; gap:10px;
-      text-decoration:none;
-    }
-    .btn:hover{ transform: translateY(-1px); filter: brightness(1.02); }
-    .btn:active{ transform: translateY(0px); }
+      footer{margin-top:26px;color:rgba(0,0,0,.55);font-weight:700;font-size:13px}
+    </style>
+  </head>
+  <body>
+    <div class="hearts" id="hearts"></div>
 
-    .btn2{
-      background: rgba(255,255,255,.08);
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: 0 12px 24px rgba(0,0,0,.12);
-    }
+    <div class="wrap">
+      <header>
+        <div class="brand"><span class="dot"></span> Date Proposal</div>
+        <nav>
+          <a href="#why">Why</a>
+          <a href="#plan">Plan</a>
+          <a href="#run">Run test</a>
+        </nav>
+      </header>
 
-    .stamp{
-      position:relative;
-      padding:18px 16px;
-      border-radius: var(--radius);
-      background: rgba(0,0,0,.20);
-      border: 1px dashed rgba(255,255,255,.22);
-      font-family: var(--mono);
-      color: rgba(255,255,255,.80);
-    }
-    .stamp b{ color: rgba(255,255,255,.92); }
-    .kv{ display:grid; grid-template-columns: 140px 1fr; gap:8px 12px; margin-top:10px; }
-    .k{ color: rgba(255,255,255,.65); }
-    .v{ color: rgba(255,255,255,.92); }
+      <div class="hero">
+        <div class="card">
+          <div>
+            <span class="pill">no Tally</span>
+            <span class="pill">Make webhook</span>
+            <span class="pill">one-file</span>
+          </div>
 
-    .cards{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:14px;
-      margin-top: 16px;
-    }
-    @media (max-width: 860px){ .cards{ grid-template-columns:1fr; } }
-
-    .card{
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: var(--radius);
-      padding: 16px 16px;
-      box-shadow: 0 16px 42px rgba(0,0,0,.22);
-    }
-    .card h3{
-      margin:0 0 8px;
-      font-size: 16px;
-      letter-spacing:-.01em;
-    }
-    .card p{ margin:0; color: var(--muted); line-height:1.55; }
-    .tiny{ font-family:var(--mono); font-size: 12.5px; color: rgba(255,255,255,.72); }
-
-    .section{
-      margin-top: 22px;
-      padding: 18px 16px;
-      border-radius: var(--radius2);
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 16px 44px rgba(0,0,0,.20);
-    }
-    .section h2{
-      margin:0 0 10px;
-      font-size: 20px;
-      letter-spacing:-.01em;
-    }
-    .section p{ margin:0 0 10px; color: var(--muted); line-height:1.6; }
-
-    .note{
-      margin-top:10px;
-      padding: 12px 12px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
-      color: rgba(255,255,255,.74);
-      font-size: 13.5px;
-    }
-
-    /* маленькие “плавающие” сердечки */
-    .floaty{
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      overflow:hidden;
-    }
-    .heart{
-      position:absolute;
-      font-size: 18px;
-      opacity:.0;
-      animation: floatUp 6s linear infinite;
-      filter: drop-shadow(0 6px 14px rgba(0,0,0,.3));
-    }
-    @keyframes floatUp{
-      0%{ transform: translateY(20px) translateX(0) scale(.9); opacity:0; }
-      10%{ opacity:.55; }
-      100%{ transform: translateY(-420px) translateX(30px) scale(1.15); opacity:0; }
-    }
-
-    footer{
-      margin-top:18px;
-      color: rgba(255,255,255,.50);
-      font-size: 12.5px;
-      text-align:center;
-    }
-    a{ color: inherit; }
-  </style>
-</head>
-
-<body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="pill"><span class="statusdot"></span> build: stable • env: prod • severity: high</div>
-      <div class="pill">owner: you • module: “date-planner”</div>
-    </div>
-
-    <section class="hero">
-      <div class="floaty" id="floaty"></div>
-
-      <div class="hero-inner">
-        <div>
-          <h1>Test Case #001: “Запланировать свидание”</h1>
+          <h1>Let’s plan a date</h1>
           <p class="sub">
-            Нужна помощь тестировщика 🙂 Я накатил фичу “Свидание”.
-            Прогони тест: выбери дату/время и предпочтения — я всё организую.
+            This page has a built-in form that sends your chosen date/time and notes to Make via webhook.
+            Everything works without a server (GitHub Pages-friendly).
           </p>
 
-          <div class="cta-row">
-            <a class="btn" href="#run" id="runBtn">▶ Run test</a>
-            <a class="btn btn2" href="#spec">📄 Посмотреть спецификацию</a>
+          <div class="ctaRow">
+            <button class="btn btnPrimary" id="btnRun">Run test</button>
+            <button class="btn btnGhost" id="btnHearts">More hearts</button>
           </div>
 
-          <div class="cards">
-            <div class="card">
-              <h3>✅ Expected result</h3>
-              <p>Ты говоришь “да”, а я беру на себя логистику и делаю всё красиво ❤️</p>
-              <div style="height:8px"></div>
-              <div class="tiny">acceptance criteria: улыбка + согласие</div>
-            </div>
+          <div class="divider"></div>
 
-            <div class="card">
-              <h3>🧯 Risk / Edge cases</h3>
-              <p>Если варианты времени не подходят — укажи в “баг-репорте”, это будет принято как valid input 🙂</p>
-              <div style="height:8px"></div>
-              <div class="tiny">mitigation: flexible schedule</div>
+          <div class="grid" id="why">
+            <div class="tile">
+              <h3>Simple</h3>
+              <p>Single HTML file: styles + logic inside. Easy to copy/paste into GitHub.</p>
+            </div>
+            <div class="tile">
+              <h3>Direct</h3>
+              <p>Form submits via fetch() to your Make webhook URL, with status messages.</p>
+            </div>
+            <div class="tile">
+              <h3>Clean</h3>
+              <p>No extra embeds or widgets. Only what you need for the flow.</p>
             </div>
           </div>
         </div>
 
-        <div class="stamp" id="spec">
-          <b>SPEC</b>
-          <div class="kv">
-            <div class="k">Preconditions</div><div class="v">хорошее настроение (желательно)</div>
-            <div class="k">Steps</div><div class="v">выбрать слот + формат + условия</div>
-            <div class="k">Priority</div><div class="v">ASAP</div>
-            <div class="k">Owner</div><div class="v">я (буду фиксить всё сам)</div>
-            <div class="k">QA</div><div class="v">ты 🙂</div>
+        <div class="rightBox">
+          <div class="mini">
+            <h3>What it sends</h3>
+            <p><b>date</b>, <b>time</b>, <b>format</b>, <b>conditions[]</b>, <b>notes</b></p>
           </div>
-          <div class="note">⚠️ Воспроизводится баг “скучные выходные” — фиксим совместным релизом.</div>
+          <div class="mini">
+            <h3>Where to change webhook</h3>
+            <p>Edit <b>MAKE_WEBHOOK_URL</b> in the script at the bottom.</p>
+          </div>
+          <div class="mini" id="plan">
+            <h3>How to use</h3>
+            <p>Open page → fill the form → submit → check Make scenario for the payload.</p>
+          </div>
         </div>
       </div>
-    </section>
 
-    <section class="section" id="run">
-      <h2>🧪 Run test</h2>
-      <p>Заполни форму ниже. Это займёт минуту, а выхлоп — прекрасный 🙂</p>
+      <section id="run">
+        <div class="card">
+          <div class="sectionTitle">
+            <h2>Run test</h2>
+            <span>Send a test payload to Make</span>
+          </div>
 
-      <form id="dateForm" class="native-form" method="POST" action="https://hook.eu1.make.com/qrm6h2uxrw22567bicfqg70whriqywcl">
-  <div class="grid">
-    <label>
-      <span>📅 Дата</span>
-      <input name="date" type="date" required>
-    </label>
+          <form id="dateForm" class="native-form">
+            <label>
+              Date
+              <input type="date" name="date" required />
+            </label>
 
-    <label>
-      <span>🕖 Время</span>
-      <select name="time" required>
-        <option value="" selected disabled>выбери</option>
-        <option>18:00</option>
-        <option>19:00</option>
-        <option>20:00</option>
-        <option>21:00</option>
-      </select>
-    </label>
+            <label>
+              Time
+              <input type="time" name="time" required />
+            </label>
 
-    <label class="full">
-      <span>🎯 Формат</span>
-      <div class="choices">
-        <label class="chip"><input type="radio" name="format" value="☕ Кофе + прогулка" required> ☕ Кофе + прогулка</label>
-        <label class="chip"><input type="radio" name="format" value="🍜 Ужин" required> 🍜 Ужин</label>
-        <label class="chip"><input type="radio" name="format" value="🎟️ Кино/выставка" required> 🎟️ Кино/выставка</label>
-        <label class="chip"><input type="radio" name="format" value="🎁 Сюрприз (с условиями)" required> 🎁 Сюрприз (с условиями)</label>
-      </div>
-    </label>
+            <label>
+              Format
+              <select name="format" required>
+                <option value="" selected disabled>Choose one</option>
+                <option value="walk">Walk</option>
+                <option value="coffee">Coffee</option>
+                <option value="dinner">Dinner</option>
+                <option value="movie">Movie</option>
+                <option value="surprise">Surprise</option>
+              </select>
+            </label>
 
-    <label class="full">
-      <span>⚙️ Условия (можно несколько)</span>
-      <div class="choices">
-        <label class="chip"><input type="checkbox" name="conditions" value="не шумно"> не шумно</label>
-        <label class="chip"><input type="checkbox" name="conditions" value="недолго (1–2 часа)"> недолго (1–2 часа)</label>
-        <label class="chip"><input type="checkbox" name="conditions" value="без спешки"> без спешки</label>
-        <label class="chip"><input type="checkbox" name="conditions" value="мне ок всё 😄"> мне ок всё 😄</label>
-      </div>
-    </label>
+            <label>
+              Mood
+              <select name="mood" required>
+                <option value="" selected disabled>Choose one</option>
+                <option value="chill">Chill</option>
+                <option value="fun">Fun</option>
+                <option value="romantic">Romantic</option>
+                <option value="adventure">Adventure</option>
+              </select>
+            </label>
 
-    <label class="full">
-      <span>🐞 Баг-репорт / пожелания</span>
-      <textarea name="notes" rows="4" placeholder="Например: не люблю толпы, люблю чай 😄"></textarea>
-    </label>
-  </div>
+            <div class="full">
+              <div style="font-weight:800;margin-bottom:6px;">Conditions</div>
+              <div class="checks">
+                <label class="check"><input type="checkbox" name="conditions" value="rain_ok" /> Rain is ok</label>
+                <label class="check"><input type="checkbox" name="conditions" value="no_alcohol" /> No alcohol</label>
+                <label class="check"><input type="checkbox" name="conditions" value="quiet_place" /> Quiet place</label>
+                <label class="check"><input type="checkbox" name="conditions" value="photos" /> Photos</label>
+              </div>
+            </div>
 
-  <button class="btn" type="submit">✅ Отправить результат теста</button>
-  <div id="formStatus" class="note" style="display:none; margin-top:10px;"></div>
-</form>
+            <label class="full">
+              Notes
+              <textarea name="notes" placeholder="Any extra details..."></textarea>
+            </label>
 
-<style>
-  .native-form { margin-top: 6px; }
-  .grid{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:12px;
-  }
-  @media (max-width: 860px){ .grid{ grid-template-columns:1fr; } }
-  label{ display:block; }
-  label span{ display:block; margin:0 0 6px; color: rgba(255,255,255,.78); font-size: 13px; }
-  input, select, textarea{
-    width:100%;
-    padding:12px 12px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,.14);
-    background: rgba(0,0,0,.22);
-    color: rgba(255,255,255,.92);
-    outline: none;
-  }
-  textarea{ resize: vertical; min-height: 110px; }
-  .full{ grid-column: 1 / -1; }
+            <div class="full" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+              <button class="btn btnPrimary" type="submit" id="submitBtn">Send to Make</button>
+              <button class="btn btnGhost" type="button" id="fillDemo">Autofill demo</button>
+            </div>
 
-  .choices{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-  }
-  .chip{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    padding:10px 12px;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,.14);
-    background: rgba(255,255,255,.06);
-    cursor:pointer;
-    user-select:none;
-  }
-  .chip input{ width:auto; }
-</style>
+            <div class="status full" id="formStatus" aria-live="polite"></div>
+          </form>
+        </div>
+      </section>
 
-<script>
-  // ВСТАВИШЬ СЮДА свой Make webhook URL:
-  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/qrm6h2uxrw22567bicfqg70whriqywcl";
+      <footer>
+        Tip: if your Make scenario needs a secret token, add a header in fetch() and validate it in Make.
+      </footer>
+    </div>
 
-  const form = document.getElementById('dateForm');
-  const statusBox = document.getElementById('formStatus');
+    <script>
+      // 1) PUT YOUR REAL MAKE WEBHOOK HERE
+      const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/1zt7u3o5q5i1jzob5c1ijhu4wiakl5eb";
 
-  function showStatus(text){
-    statusBox.style.display = 'block';
-    statusBox.textContent = text;
-  }
+      // 2) OPTIONAL: set a token to reduce random spam (validate in Make)
+      // const MAKE_TOKEN = "your-secret-token";
+      const MAKE_TOKEN = "";
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    if (MAKE_WEBHOOK_URL.includes("PASTE_YOUR_MAKE_WEBHOOK_URL_HERE")) {
-  showStatus("⚠️ Не настроен webhook. Сначала вставь ссылку Make в код.");
-  return;
-}
-
-    const fd = new FormData(form);
-    const conditions = fd.getAll('conditions'); // чекбоксы
-    const payload = {
-      date: fd.get('date'),
-      time: fd.get('time'),
-      format: fd.get('format'),
-      conditions: conditions,
-      notes: fd.get('notes') || ""
-    };
-
-    try{
-      showStatus("⏳ Отправляю результат теста...");
-      const res = await fetch(MAKE_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+      // Smooth scroll to Run test
+      const btnRun = document.getElementById("btnRun");
+      btnRun.addEventListener("click", () => {
+        document.getElementById("run").scrollIntoView({ behavior: "smooth", block: "start" });
       });
 
-      if (!res.ok) throw new Error("bad response: " + res.status);
+      // Hearts
+      const hearts = document.getElementById("hearts");
+      function spawnHeart(count = 1) {
+        for (let i = 0; i < count; i++) {
+          const el = document.createElement("div");
+          el.className = "heart";
+          el.textContent = Math.random() > 0.5 ? "❤" : "♥";
+          el.style.left = Math.random() * 100 + "vw";
+          el.style.top = (80 + Math.random() * 20) + "vh";
+          el.style.fontSize = (14 + Math.random() * 18) + "px";
+          el.style.animationDuration = (5.2 + Math.random() * 2.0) + "s";
+          hearts.appendChild(el);
+          setTimeout(() => el.remove(), 7500);
+        }
+      }
+      setInterval(() => spawnHeart(1), 450);
 
-      form.reset();
-      showStatus("✅ Тест пройден. QA принял. Я скоро напишу для подтверждения ❤️");
-      // мягко проскроллим, чтобы она увидела успех
-      statusBox.scrollIntoView({behavior:"smooth", block:"center"});
-    }catch(err){
-      showStatus("❌ Не удалось отправить. Попробуй ещё раз (или напиши мне напрямую).");
-      console.error(err);
-    }
-  });
-</script>
+      document.getElementById("btnHearts").addEventListener("click", () => spawnHeart(14));
 
-      <iframe
-        data-tally-src="https://tally.so/r/YOUR_TALLY_FORM_ID"
-        loading="lazy"
-        width="100%"
-        height="700"
-        frameborder="0"
-        marginheight="0"
-        marginwidth="0"
-        title="Date Test Form">
-      </iframe>
+      // Form -> Make
+      const form = document.getElementById("dateForm");
+      const formStatus = document.getElementById("formStatus");
+      const submitBtn = document.getElementById("submitBtn");
+      const fillDemo = document.getElementById("fillDemo");
 
-      <script>
-        // Официальный скрипт Tally для корректной подгрузки
-        var d=document, w=window;
-        var s=d.createElement("script");
-        s.src="https://tally.so/widgets/embed.js";
-        s.defer=true;
-        d.body.appendChild(s);
-      </script>
-      <!-- TALLY EMBED END -->
+      function setStatus(text, kind = "") {
+        formStatus.textContent = text;
+        formStatus.classList.remove("ok", "err");
+        if (kind) formStatus.classList.add(kind);
+      }
 
-      <div class="note">
-        P.S. Если ты найдёшь баг — это не баг, это feature request 😄
-      </div>
-    </section>
+      fillDemo.addEventListener("click", () => {
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, "0");
+        const dd = String(now.getDate() + 1).padStart(2, "0");
+        form.elements.date.value = `${yyyy}-${mm}-${dd}`;
+        form.elements.time.value = "19:30";
+        form.elements.format.value = "dinner";
+        form.elements.mood.value = "romantic";
+        form.elements.notes.value = "Test run from the website.";
+        setStatus("Filled demo values. Now press Send to Make.");
+      });
 
-    <footer>
-      made with ✨ + немного наглости • version 1.0.0
-    </footer>
-  </div>
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-  <script>
-    // плавный скролл
-    document.getElementById('runBtn').addEventListener('click', function(e){
-      // оставим якорь, но сделаем мягко
-      e.preventDefault();
-      document.querySelector('#run').scrollIntoView({behavior:'smooth', block:'start'});
-      history.replaceState(null, '', '#run');
-    });
+        if (!MAKE_WEBHOOK_URL || !MAKE_WEBHOOK_URL.startsWith("http")) {
+          setStatus("Webhook URL is not set. Update MAKE_WEBHOOK_URL in the script.", "err");
+          return;
+        }
 
-    // “плавающие” сердечки
-    const floaty = document.getElementById('floaty');
-    const hearts = ["💗","💖","💘","💓","💞"];
-    function spawn(){
-      const el = document.createElement('div');
-      el.className = 'heart';
-      el.textContent = hearts[Math.floor(Math.random()*hearts.length)];
-      const left = Math.random()*100;
-      const delay = Math.random()*2;
-      const size = 14 + Math.random()*16;
-      el.style.left = left + '%';
-      el.style.bottom = (-10 - Math.random()*40) + 'px';
-      el.style.animationDelay = delay + 's';
-      el.style.fontSize = size + 'px';
-      el.style.opacity = 0;
-      floaty.appendChild(el);
-      setTimeout(()=>{ el.remove(); }, 6500);
-    }
-    setInterval(spawn, 450);
-  </script>
-</body>
+        const data = new FormData(form);
+        const payload = {
+          date: data.get("date"),
+          time: data.get("time"),
+          format: data.get("format"),
+          mood: data.get("mood"),
+          conditions: data.getAll("conditions"),
+          notes: data.get("notes") || ""
+        };
+
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = "0.7";
+        setStatus("Sending...");
+
+        try {
+          const headers = { "Content-Type": "application/json" };
+          if (MAKE_TOKEN) headers["X-Token"] = MAKE_TOKEN;
+
+          const res = await fetch(MAKE_WEBHOOK_URL, {
+            method: "POST",
+            headers,
+            body: JSON.stringify(payload)
+          });
+
+          if (!res.ok) {
+            const text = await res.text().catch(() => "");
+            throw new Error(`HTTP ${res.status} ${res.statusText}${text ? " — " + text : ""}`);
+          }
+
+          setStatus("Sent успешно. Проверь Make scenario, что payload прилетел.", "ok");
+          form.reset();
+        } catch (err) {
+          setStatus("Ошибка отправки: " + (err?.message || String(err)), "err");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = "1";
+        }
+      });
+    </script>
+  </body>
 </html>
+
